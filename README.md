@@ -66,6 +66,10 @@ Following **Server Side SDK's** are currently published for XI Resellers use
 | Order StatusWebhook | Order Status                 | `POST` [https://api.ingrammicro.com:443/resellers/v1/webhooks/orderstatusevent](https://api.ingrammicro.com:443/sandbox/resellers/v1/webhooks/orderstatusevent)                |
 | Stock UpdateWebhook | Stock Update                 | `POST` [https://api.ingrammicro.com:443/resellers/v1/webhooks/availabilityupdate](https://api.ingrammicro.com:443/sandbox/resellers/v1/webhooks/availabilityupdate)            |
 
+# CI
+
+The [CI workflow](.github/workflows/ci.yml) validates that the checked-in OpenAPI specifications are well-formed. It parses `openapispec/unified/XI-Resellers-API-Spec.json` as JSON and `openapispec/unified/XI-Resellers-API-Spec.yaml` as YAML, and confirms the workflow file itself is valid YAML. It runs on every pull request and on pushes to `main`.
+
 # Important Links
 
 * [Developer Portal](https://developer.ingrammicro.com)
