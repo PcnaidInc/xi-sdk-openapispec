@@ -21,18 +21,26 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
+      - name: Install YAML parser
+        run: python3 -m pip install --disable-pip-version-check "PyYAML==6.0.2"
+
       - name: Validate JSON specification
-        run: python3 -m json.tool openapispec/unified/XI-Resellers-API-Spec.json > /dev/null
+        run: |
+          python3 - <<'PY'
+          import json
+
+          with open("openapispec/unified/XI-Resellers-API-Spec.json", "r", encoding="utf-8") as handle:
+              json.load(handle, parse_constant=lambda value: (_ for _ in ()).throw(
+                  ValueError(f"non-finite JSON constant not allowed: {value}")
+              ))
+          print("JSON syntax OK")
+          PY
 
       - name: Validate YAML specification
         run: |
           python3 - <<'PY'
-          import sys
-          try:
-              import yaml
-          except ImportError:
-              print("PyYAML not available; skipping YAML parse check")
-              sys.exit(0)
+          import yaml
+
           with open("openapispec/unified/XI-Resellers-API-Spec.yaml", "r", encoding="utf-8") as handle:
               yaml.safe_load(handle)
           print("YAML syntax OK")
@@ -41,12 +49,8 @@ jobs:
       - name: Validate workflow and docs YAML syntax
         run: |
           python3 - <<'PY'
-          import sys
-          try:
-              import yaml
-          except ImportError:
-              print("PyYAML not available; skipping workflow YAML parse check")
-              sys.exit(0)
+          import yaml
+
           with open(".github/workflows/ci.yml", "r", encoding="utf-8") as handle:
               yaml.safe_load(handle)
           print("Workflow YAML syntax OK")
